@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        .alert {
+            background: green;
+            padding: 1rem;
+            border-radius: 5px;
+            color: white;
+            margin: 1rem;
+        }
+    </style>
+
+</head>
+
+<body>
+
+
+
+    <div class="container">
+        <h3>Box Size Calculator</h3>
+    </div>
+
+    <!-- Form -->
+
+    <div class="container">
+        <!--左半部輸入資料區-->
+        <div class="one-half column">
+            <form id="main" action="/send" method="POST">
+                <label for="product_id">Product ID:</label>
+                <input type="text" placeholder="Product ID" class="u-full-width" name="product_id" id="product_id"
+                    required />
+
+                <label for="length">Length:</label>
+                <input type="text" placeholder="Length" class="u-full-width" name="length" id="length" required />
+
+                <label for="width">Width:</label>
+                <input type="text" placeholder="Width" class="u-full-width" name="width" id="width" required />
+
+                <label for="height">Height:</label>
+                <input type="text" placeholder="Height" class="u-full-width" name="height" id="height" required />
+
+                <div class="row">
+                    <button type="submit" id="add_btn" class="one-half column" onclick="Add()">Add</button>
+                    <button type="submit" id="calc_btn" class="one-half column"
+                        onclick="calculateCostSize()">Calculate</button>
+                </div>
+        </div>
+        <!--右半部輸入資料區-->
+        <div class="one-half column">
+            <div class="lists" id="lists">
+                <b>Total items:</b>&nbsp;&nbsp;<b><span class="total_items"></span></b> <br />
+
+                <b>Total length:</b>&nbsp;&nbsp;<b><span class="total_length"></span></b> <br />
+                <b>Total width:</b>&nbsp;&nbsp;<b><span class="total_width"></span></b> <br />
+                <b>Total height:</b>&nbsp;&nbsp;<b><span class="total_height"></span></b> <br />
+                <b>Total volume:</b>&nbsp;&nbsp;<b><span class="total_volume"></span></b> <br />
+
+
+                <label for="weight">Total weight: <input type="text" placeholder="Weight" name="weight" id="weight"
+                        maxlength="4" size="4" required />&nbsp;<b>lb(s)</b></label>
+
+
+            </div>
+            <HR>
+
+            <!--計算後的結果-->
+            <div class="res" id="res">
+                <b>Box size:</b>
+                <div class="alert">
+                    <span class="boxsize"></span>
+                </div>
+
+                <b>Shipping cost:</b>
+                <div class="alert">
+                    <span class="shippingcost"></span>
+                </div>
+            </div>
+        </div>
+
+        <HR style="border:3 dashed">
+
+        <div class="two-thirds column">
+            <table class="details" id="details">
+                <thead>
+                    <tr>
+                        <th>Product ID</th>
+                        <th>Length</th>
+                        <th>Width</th>
+                        <th>Height</th>
+                        <th>Volume</th>
+                        <th>Remove</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td>Total</td>
+                        <td>
+                            <span class="total_length"></span>
+                        </td>
+                        <td>
+                            <span class="total_width"></span>
+                        </td>
+                        <td>
+                            <span class="total_height"></span>
+                        </td>
+                        <td>
+                            <span class="total_volume"></span>
+                        </td>
+                    </tr>
+                </tfoot>
+
+
+            </table>
+        </div>
+
+    </div>
+
+
+
+    </form>
+
+    <!-- Function -->
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script type="text/javascript">
+
+
+
+
+
+
+        function Add() {
+
+            if ($.trim($("#length").val()) === "" || $.trim($("#width").val()) === "" || $.trim($("#height").val()) === "") {
+                alert('Please fill out all fields');
+                return false;
+            }
+            AddRow($("#product_id").val(), $("#length").val(), $("#width").val(), $("#height").val());
+            $("#product_id").val("");
+            $("#length").val("");
+            $("#width").val("");
+            $("#height").val("");
+            CalculateTotal();
+        };
+
+        function AddRow(product_id, length, width, height) {
+            var tBody = $("#details > TBODY")[0];
+
+            //Add Row.
+            row = tBody.insertRow(-1);
+
+            //Add Number
+            cell = $(row.insertCell(-1));
+            cell.html(product_id);
+
+            //Add Name cell.
+            var cell = $(row.insertCell(-1));
+            cell.html(length);
+
+            //Add Qty cell.
+            cell = $(row.insertCell(-1));
+            cell.html(width);
+
+            //Add Price cell.
+            cell = $(row.insertCell(-1));
+            cell.html(height);
+
+            //Add Amount cell.
+            cell = $(row.insertCell(-1));
+            cell.html(parseInt(length) * parseInt(width) * parseInt(height));
+
+
+            //Add Button cell.
+            cell = $(row.insertCell(-1));
+            var btnRemove = $("<a>Remove</a>");
+            btnRemove.attr("href", "#");
+            btnRemove.attr("onclick", "Remove(this);");
+            cell.append(btnRemove);
+
+
+        };
+
+        function Remove(button) {
+            var row = $(button).closest("TR");
+            var name = $("TD", row).eq(0).html();
+            if (confirm("Do you want to delete product_id : " + name)) {
+                var table = $("#details")[0];
+                table.deleteRow(row[0].rowIndex);
+            }
+            CalculateTotal();
+        };
+
+        function CalculateTotal() {
+            var lengthtotal = 0;
+            var widthtotal = 0;
+            var heighttotal = 0;
+            var volumetotal = 0;
+            //items的變數
+            var itemstotal = 0;
+
+            $("#details > TBODY > tr").each(function () {
+                var lt = $(this).find('td').eq(1).html();
+                var wt = $(this).find('td').eq(2).html();
+                var ht = $(this).find('td').eq(3).html();
+                var vt = $(this).find('td').eq(4).html();
+
+                if (!isNaN(lt)) {
+                    lengthtotal += parseFloat(lt);
+                    itemstotal += 1; //計算有幾個items
+                }
+                if (!isNaN(wt)) {
+                    widthtotal += parseFloat(wt);
+                }
+                if (!isNaN(ht)) {
+                    heighttotal += parseFloat(ht);
+                }
+                if (!isNaN(vt)) {
+                    volumetotal += parseFloat(vt);
+                }
+            });
+
+            $(".total_length").html(lengthtotal.toFixed());
+            $(".total_width").html(widthtotal.toFixed());
+            $(".total_height").html(heighttotal.toFixed());
+            $(".total_volume").html(volumetotal.toFixed());
+            $(".total_items").html(itemstotal.toFixed());
+        }
+
+        function calculateCostSize() {
+            var volumetotal = 0;
+
+            //calculate the box size based on the volume
+            $("#details > TBODY > tr").each(function () {
+                var vt = $(this).find('td').eq(4).html();
+                if (!isNaN(vt)) {
+                    volumetotal += parseFloat(vt);
+                }
+            });
+
+            if (volumetotal >= 500) {
+                $(".boxsize").html("Large");
+            } else if (volumetotal < 500 & volumetotal >= 100) {
+                $(".boxsize").html("Medium");
+            } else {
+                $(".boxsize").html("Small");
+            }
+
+            //calculate the box size based on the volume and weight
+
+            var weight = $("#weight").val();
+            var rate = volumetotal / weight;
+
+            if (rate >= 500) {
+                $(".shippingcost").html("$50");
+            } else if (rate < 500 & rate >= 100) {
+                $(".shippingcost").html("$30");
+            } else {
+                $(".shippingcost").html("$10");
+            }
+
+
+
+        }
+
+
+
+    </script>
+
+
+
+
+</body>
+
+</html>
