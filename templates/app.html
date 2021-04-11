@@ -64,7 +64,7 @@
 
 
                 <label for="weight">Total weight: <input type="text" placeholder="Weight" name="weight" id="weight"
-                        maxlength="4" size="4" required />&nbsp;<b>lb(s)</b></label>
+                        maxlength="4" size="4" />&nbsp;<b>lb(s)</b></label>
 
 
             </div>
@@ -257,11 +257,10 @@
             //calculate the box size based on the volume and weight
 
             var weight = $("#weight").val();
-            var rate = volumetotal / weight;
 
-            if (rate >= 500) {
+            if (weight >= 50) {
                 $(".shippingcost").html("$50");
-            } else if (rate < 500 & rate >= 100) {
+            } else if (weight < 50 & weight >= 10) {
                 $(".shippingcost").html("$30");
             } else {
                 $(".shippingcost").html("$10");
