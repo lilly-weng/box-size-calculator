@@ -34,18 +34,17 @@
         <!--左半部輸入資料區-->
         <div class="one-half column">
             <form id="main" action="/send" method="POST">
-                <label for="product_id">Product ID:</label>
-                <input type="text" placeholder="Product ID" class="u-full-width" name="product_id" id="product_id"
-                    required />
+                <!-- <label for="product_id">Product ID:</label>
+                <input type="text" placeholder="Product ID" class="u-full-width" name="product_id" id="product_id" /> -->
 
-                <label for="length">Length (inch):</label>
-                <input type="text" placeholder="Length" class="u-full-width" name="length" id="length" required />
+                <label for="length">Length:</label>
+                <input type="text" placeholder="Length" class="u-full-width" name="length" id="length" />
 
                 <label for="width">Width:</label>
-                <input type="text" placeholder="Width" class="u-full-width" name="width" id="width" required />
+                <input type="text" placeholder="Width" class="u-full-width" name="width" id="width" />
 
                 <label for="height">Height:</label>
-                <input type="text" placeholder="Height" class="u-full-width" name="height" id="height" required />
+                <input type="text" placeholder="Height" class="u-full-width" name="height" id="height" />
 
                 <div class="row">
                     <button type="submit" id="add_btn" class="one-half column" onclick="Add()">Add</button>
